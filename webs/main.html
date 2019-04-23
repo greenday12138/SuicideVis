@@ -1,13 +1,72 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-  </body>
+
+<head>
+  <link href="./materialize/iconfont/material-icons.css" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="./materialize/css/materialize.min.css" media="screen,projection" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body>
+
+  <!--标题Logo--->
+  <nav>
+    <div class="nav-wrapper blue-grey darken-4">
+      <a href="#" class="brand-logo center">SUICIDEVIS</a>
+      <ul class="right">
+        <li><a href="#">成员名单</a></li>
+        <li><a href="#">使用说明</a></li>
+        <li><a id="link-git" href="#">view on GitHub</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!--侧边栏，用于工具栏-->
+  <ul id="slide-out" class="sidenav">
+
+    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+    <li><a href="#!">Second Link</a></li>
+    <li>
+      <div class="divider"></div>
+    </li>
+    <li><a class="subheader">Subheader</a></li>
+    <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+  </ul>
+
+  <!--主体-->
+
+  <div class="col s12">
+    <!--这个是代指全部绘图区-->
+
+    <div class="col s12"><!--占据页面3/4-->
+      <div id="left-earth" style="position: relative; overflow: hidden; width: 100%; height: 100%; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"></div>
+    </div>
+
+    <div class="col s3"><!--占据页面1/4-->
+
+    </div>
+
+  </div>
+
+
+  <!--悬浮工具栏-->
+  <div id="tool-bar" class="fixed-action-btn">
+    <a data-target="slide-out" class="sidenav-trigger btn-floating btn-large red">
+      <i class="large material-icons">menu</i>
+    </a>
+    <ul>
+      <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+      <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+      <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+      <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+    </ul>
+  </div>
+
+  <!--脚本区域-->
+  <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
+  <script src="echarts/echarts.min.js"></script>
+  <script src="src/script/main_render.js"></script>
+  <script src="./src/script/main_logic.js"></script>
+  <script src="src/script/main_echarts_functions.js"></script>
+  <script src="src/script/test.js"></script><!--这一行请在测试结束后注释掉-->
+</body>
+
 </html>
