@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
-<body>
+<body class="blue-grey lighten-4">
 
   <!--标题Logo--->
-  <nav>
-    <div class="nav-wrapper blue-grey darken-4">
+  <nav style="height:8%">
+    <div class="nav-wrapper blue-grey darken-4" style="-webkit-app-region: drag">
       <a href="#" class="brand-logo center">SUICIDEVIS</a>
-      <ul class="right">
+      <ul class="right"  style="-webkit-app-region: no-drag">
         <li><a href="#">成员名单</a></li>
         <li><a href="#">使用说明</a></li>
         <li><a id="link-git" href="#">view on GitHub</a></li>
@@ -20,29 +20,38 @@
     </div>
   </nav>
   <!--侧边栏，用于工具栏-->
-  <ul id="slide-out" class="sidenav">
+  <ul id="slide-out" class="sidenav" style="-webkit-app-region: no-drag">
 
-    <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-    <li><a href="#!">Second Link</a></li>
-    <li>
-      <div class="divider"></div>
-    </li>
-    <li><a class="subheader">Subheader</a></li>
+    <br>
+   
+    <li><a class="subheader">Menu</a></li>
     <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
   </ul>
 
   <!--主体-->
 
-  <div class="col s12">
+  <div class="row">
     <!--这个是代指全部绘图区-->
 
-    <div class="col s12"><!--占据页面3/4-->
-      <div id="left-earth" style="position: relative; overflow: hidden; width: 100%; height: 100%; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"></div>
+    <div class="col s12">
+
+      <div class="col s8">
+<!--占据页面3/4-->
+        <div id="left-earth" style="width: 100%;height:90%;"></div>
+      </div>
+      
+      <div class="col s4">
+
+        <!--style="position: relative; overflow: hidden; width: 60%; height: 90%; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"-->
+      <div id="river" style="width: 100%;height:45%;">
+        <!--占据页面1/4-->
+      </div>
+
+      
+      </div>
+
     </div>
 
-    <div class="col s3"><!--占据页面1/4-->
-
-    </div>
 
   </div>
 
@@ -53,7 +62,7 @@
       <i class="large material-icons">menu</i>
     </a>
     <ul>
-      <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+      <li><a class="btn-floating red"><i class="material-icons">power</i></a></li>
       <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
       <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
       <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
@@ -63,10 +72,12 @@
   <!--脚本区域-->
   <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
   <script src="echarts/echarts.min.js"></script>
+  <script src="echarts/extension/world.js"></script>
   <script src="src/script/main_render.js"></script>
   <script src="./src/script/main_logic.js"></script>
   <script src="src/script/main_echarts_functions.js"></script>
-  <script src="src/script/test.js"></script><!--这一行请在测试结束后注释掉-->
+  <script src="src/script/test.js"></script>
+  <!--这一行请在测试结束后注释掉-->
 </body>
 
 </html>

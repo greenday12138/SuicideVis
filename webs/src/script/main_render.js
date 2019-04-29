@@ -4,3 +4,6 @@
 
 M.AutoInit();
 
+var maychart=echarts.init(document.getElementById("left-earth"));
+
+var riverchart=echarts.init(document.getElementById("river"));
