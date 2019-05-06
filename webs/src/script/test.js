@@ -246,9 +246,9 @@ option = {
         color: '#404a59'
     }]),
     title: {
-        text: 'Prices and Earnings 2012',
+        text: 'World Suicide Vis',
         subtext: 'data from macrofocus',
-        sublink: 'https://www.macrofocus.com/public/products/infoscope/datasets/pricesandearnings/',
+        //sublink: 'https://www.macrofocus.com/public/products/infoscope/datasets/pricesandearnings/',
         left: 'center',
         top: 5,
         itemGap: 0,
