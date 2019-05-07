@@ -221,7 +221,7 @@ option = {
     }]),
     title: {
         text: 'World Suicide Vis',
-        subtext: 'data from macrofocus',
+        subtext: 'data from kaggle',
         //sublink: 'https://www.macrofocus.com/public/products/infoscope/datasets/pricesandearnings/',
         left: 'center',
         top: 5,
