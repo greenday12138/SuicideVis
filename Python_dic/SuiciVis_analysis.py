@@ -9,6 +9,7 @@
 import numpy as np
 import pandas as pd
 import gc
+import psutil
 '''
 import os
 import matplotlib.pyplot as plt
@@ -28,13 +29,13 @@ dp.dataframeName='The World Suicides Data.csv'
 
 #dp.describe()
 #dp.info()
-'''数据中'HDI for year'列存在缺失'''
+#数据中'HDI for year'列存在缺失
 #计算每列缺失数据所占百分比
 #dp.isnull().sum()*100/dp.isnull().count()
 
 #去掉缺失数据项
 #由于HID一列缺失率高达69.94%，因此我认为不适合简单删除处理
-'''
+
 country_list=dp.country.unique()
 fill_list=['HDI for year']
 for country in country_list:
@@ -43,11 +44,11 @@ for country in country_list:
 dp.dropna(inplace=True)
 
 #dp.isnull().sum()
-'''
 
-'''如何处理二值属性'''
-'''如何区分离群点'''
-'''如何分别对离群点和正常值进行分析'''
+
+#如何处理二值属性
+#如何区分离群点
+#如何分别对离群点和正常值进行分析
 
 dp.groupby(['country','age']).suicides_no.sum().nlargest(10).plot(kind='barh')
 dp.groupby(['country','age'])['suicides/100k pop'].sum().nlargest(10).plot(kind='barh')
@@ -123,12 +124,19 @@ def DataFrame2Ndarray(df,index,drop_columns_list=None):
         count+=1
     del count
     tensor=np.zeros(shape=shape)
-    #tensor=tensor.astype(list)
+    tensor=tensor.astype(list)
     for i in range(df.values.shape[0]):
-
+        #以下三句为出错语句
         temp=df.values[i,:]
         temp_index=df.index[i]
         tensor[IndexinTensor(new_index,temp_index)]=temp
+
+        gc.collect()
+        mem=psutil.virtual_memory()
+        print('Memory available in GB'+str(mem.available/(1024**3)))
+
+        #del temp
+        #del temp_index
     return tensor
 
 #kernel function
