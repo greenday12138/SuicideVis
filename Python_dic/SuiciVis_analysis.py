@@ -103,14 +103,13 @@ def IndexinTensor(new_index,temp_index):
         count+=1
     return tuple(index)
 
-def DataFrame2Ndarray(df,index,drop_columns_list=None):
+def DataFrame2Ndarray(df,index,mode):
     '''
     :param df:type:DataFrame
     :param index: type:list
-    :param drop_columns_list: type:list
+    :param mode:string
     :return:
     '''
-    df=df.drop(drop_columns_list,axis=1)
     new_index=[]
     for i in index:
         new_index.append(list(set(df[i].values)))
@@ -124,22 +123,23 @@ def DataFrame2Ndarray(df,index,drop_columns_list=None):
         count+=1
     del count
     tensor=np.zeros(shape=shape)
-    tensor=tensor.astype(list)
     for i in range(df.values.shape[0]):
-        #以下三句为出错语句
-        temp=df.values[i,:]
-        temp_index=df.index[i]
+        temp=df[mode].values[i]
+        temp_index=df[mode].index[i]
         tensor[IndexinTensor(new_index,temp_index)]=temp
-
+        '''
         gc.collect()
         mem=psutil.virtual_memory()
         print('Memory available in GB'+str(mem.available/(1024**3)))
-
+        '''
         #del temp
         #del temp_index
     return tensor
 
-#kernel function
-DataFrame2Ndarray(dp,['country','year','age','sex'],['suicides_no', 'country-year', 'generation'])#此句报"Memory Error"
+index_list=['country','year','age','sex']
+mode_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
+#倒数第二个mode项有问题
+
+Tensor=DataFrame2Ndarray(dp,index_list,r'suicides/100k pop')
 
 
