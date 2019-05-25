@@ -2,10 +2,8 @@
 '''
 任务定义：
     描述：想象一下，当你观察这份数据时，你最想分析哪些问题？
-
     1.由数据中('suicides/100k pop','HDI for year','gdp_per_capita')三项，对比两个或多个国家或地区在同一年份某一年龄段的自杀率
 '''
-
 import numpy as np
 import pandas as pd
 import gc
@@ -18,6 +16,7 @@ import warnings
 '''
 import tensorly as tl
 from tensorly.decomposition import parafac
+from sklearn import cluster
 
 data_path=r'C:\Users\lenovo\Data_visualization\SuiciVis\data\master.csv'
 
@@ -103,7 +102,7 @@ def IndexinTensor(new_index,temp_index):
         count+=1
     return tuple(index)
 
-def DataFrame2Ndarray(df,index,mode):
+def DataFrame2Ndarray(df,index,mode,return_index=False):
     '''
     :param df:type:DataFrame
     :param index: type:list
@@ -134,12 +133,42 @@ def DataFrame2Ndarray(df,index,mode):
         '''
         #del temp
         #del temp_index
-    return tensor
+    if return_index==True:
+        return tensor,new_index
+    else:
+        return tensor
 
 index_list=['country','year','age','sex']
 mode_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
 #倒数第二个mode项有问题
 
-Tensor=DataFrame2Ndarray(dp,index_list,r'suicides/100k pop')
+#number of components
+rank=1
+'''
+mode0_tensor,tensor_index=DataFrame2Ndarray(dp,index_list,mode_list[0],return_index=True)
+mode0_factors_errors=tl.decomposition.parafac(mode0_tensor,rank=rank,return_errors=True)
+mode0_reconstructed_tensor=tl.kruskal_to_tensor(mode0_factors_errors[0])
 
+mode2_tensor=DataFrame2Ndarray(dp,index_list,mode_list[2])
+mode2_factors_errors=tl.decomposition.parafac(mode2_tensor,rank=rank,return_errors=True)
+mode2_reconstructed_tensor=tl.kruskal_to_tensor(mode2_factors_errors[0])
+#mode2_deviation_percentage=(mode2_tensor-mode2_reconstructed_tensor)/mode2_tensor
+#running time warning
+'''
+
+#聚类算法
+
+#len(mode2_factors_errors[0][0])
+
+class mode_feature:
+    def __init__(self,mode,tensor):
+        self.mode=mode
+        self.tensor=tensor
+        self.factors,self.errors=tl.decomposition.parafac(self.tensor,rank=1,return_errors=True)
+        self.reconstructed_tensor=tl.kruskal_to_tensor(self.factors)
+
+mode0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,mode_list[0]))
+mode1_feature=mode_feature(1,DataFrame2Ndarray(dp,index_list,mode_list[1]))
+mode2_feature=mode_feature(2,DataFrame2Ndarray(dp,index_list,mode_list[2]))
+mode3_feature=mode_feature(3,DataFrame2Ndarray(dp,index_list,mode_list[3]))
 
