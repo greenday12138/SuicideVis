@@ -8,15 +8,17 @@ import numpy as np
 import pandas as pd
 import gc
 import psutil
+import sklearn
+import tensorly as tl
+from tensorly.decomposition import parafac
+from sklearn import cluster
+from numpy import matrix
 '''
 import os
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 import warnings
 '''
-import tensorly as tl
-from tensorly.decomposition import parafac
-from sklearn import cluster
 
 data_path=r'C:\Users\lenovo\Data_visualization\SuiciVis\data\master.csv'
 
@@ -112,15 +114,12 @@ def DataFrame2Ndarray(df,index,mode,return_index=False):
     new_index=[]
     for i in index:
         new_index.append(list(set(df[i].values)))
-    count=0
     df=df.set_index(index)
     shape=ShapeofIndex(new_index)
-    for i in new_index:
+    for i in range(len(new_index)):
         j=0
-        new_index[count]=List2Dict(i)
+        new_index[i]=List2Dict(new_index[i])
         #new_index列表每一个元素都是一个维度，如country维，year维
-        count+=1
-    del count
     tensor=np.zeros(shape=shape)
     for i in range(df.values.shape[0]):
         temp=df[mode].values[i]
@@ -139,8 +138,10 @@ def DataFrame2Ndarray(df,index,mode,return_index=False):
         return tensor
 
 index_list=['country','year','age','sex']
-mode_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
+#mode_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
 #倒数第二个mode项有问题
+mode_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']
+
 
 #number of components
 rank=1
@@ -161,14 +162,54 @@ mode2_reconstructed_tensor=tl.kruskal_to_tensor(mode2_factors_errors[0])
 #len(mode2_factors_errors[0][0])
 
 class mode_feature:
-    def __init__(self,mode,tensor):
+    def __init__(self,mode=None,tensor=None):
         self.mode=mode
         self.tensor=tensor
-        self.factors,self.errors=tl.decomposition.parafac(self.tensor,rank=1,return_errors=True)
-        self.reconstructed_tensor=tl.kruskal_to_tensor(self.factors)
+        if tensor.all==None:
+            self.factors=None
+            self.reconstructed_tensor=None
+        else:
+            self.factors,self.errors=tl.decomposition.parafac(self.tensor,rank=1,return_errors=True)
+            self.reconstructed_tensor=tl.kruskal_to_tensor(self.factors)
 
+    def create_mode_features(self,mode_list,tensor_list=None,func=DataFrame2Ndarray,df=None,index_list=None):
+        mode_features=[]
+        if tensor_list!=None:
+            for i in range(len(mode_list)):
+                mode_features.append(mode_feature(mode_list[i],tensor_list[i]))
+            return mode_features
+        else:
+            for i in range(len(mode_list)):
+                mode_features.append(mode_feature(mode=i,tensor=DataFrame2Ndarray(df,index_list,mode=mode_list[i])))
+            return mode_features
+
+    #def factors_cluster(self):
+
+'''
 mode0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,mode_list[0]))
 mode1_feature=mode_feature(1,DataFrame2Ndarray(dp,index_list,mode_list[1]))
 mode2_feature=mode_feature(2,DataFrame2Ndarray(dp,index_list,mode_list[2]))
 mode3_feature=mode_feature(3,DataFrame2Ndarray(dp,index_list,mode_list[3]))
+'''
+#mode_features=mode_feature(mode=None,tensor=None)
+#mode_features=mode_features.create_mode_features(mode_list=mode_list,func=DataFrame2Ndarray,df=dp,index_list=index_list)
+mode0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,mode_list[0]))
+[temp,tensor_index]=DataFrame2Ndarray(dp,index_list,mode=mode_list[0],return_index=True)
+del temp
+
+#维度'country'上的特征矩阵
+
+mode0_tensor=DataFrame2Ndarray(dp,index_list,mode_list[0])
+mode0_feature_factors=tl.decomposition.parafac(mode0_tensor,rank=rank)
+mode0_feature_country=np.matmul(mode0_feature_factors[0],np.matrix.transpose(tl.tenalg.khatri_rao([mode0_feature_factors[3],mode0_feature_factors[2],mode0_feature_factors[1]])))
+
+#K-means聚类
+n_clusters=3
+kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(mode0_feature_country)
+'''
+mode0_country_partition_labels=dict()
+for i in range(len(kmeans.labels_)):
+    mode0_country_partition_labels[tensor_index[0].get() == i] = i
+'''
+
 
