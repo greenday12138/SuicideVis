@@ -14,6 +14,7 @@ from tensorly.decomposition import parafac
 from sklearn import cluster
 from numpy import matrix
 import matplotlib.pyplot as plt
+from sklearn.cluster import AgglomerativeClustering
 '''
 import os
 import matplotlib.pyplot as plt
@@ -219,7 +220,7 @@ mode0_feature_country_deviation_quartile_50=np.percentile(mode0_feature_deviatio
 mode0_feature_country_deviation_quartile_75=np.percentile(mode0_feature_deviation,q=75,axis=(1,2,3),interpolation='linear')
 
 #K-means clustering
-n_clusters=4
+n_clusters=10
 kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(mode0_feature_country)
 
 '''
@@ -231,5 +232,26 @@ for i in range(len(kmeans.labels_)):
 
 #Hierarchical clustering
 
+#different linkage strategies
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
+clustering=[]
+mode0_feature_factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(mode0_feature_country)
+for linkage in ('ward','average','complete','single'):
+    clustering.append(cluster.AgglomerativeClustering(linkage=linkage,n_clusters=10))
+    clustering[len(clustering)-1].fit(mode0_feature_factors_red)
+#此句须在python console自行运行
+#clustering[0].labels_
 
+
+#adding connectivity constraints
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
+
+ward=[]
+ward.append(AgglomerativeClustering(n_clusters=10,linkage='ward').fit(mode0_feature_country))
+#此句须在python console自行运行
+#ward[0].labels_
+from sklearn.neighbors import kneighbors_graph
+connectivity=kneighbors_graph(mode0_feature_country,n_neighbors=10,include_self=False)
+ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(mode0_feature_country))
+#ward[1].labels_
 #OPTICS
