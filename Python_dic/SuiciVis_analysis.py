@@ -13,6 +13,7 @@ import tensorly as tl
 from tensorly.decomposition import parafac
 from sklearn import cluster
 from numpy import matrix
+import matplotlib.pyplot as plt
 '''
 import os
 import matplotlib.pyplot as plt
@@ -200,12 +201,27 @@ del temp
 #维度'country'上的特征矩阵
 
 mode0_tensor=DataFrame2Ndarray(dp,index_list,mode_list[0])
-mode0_feature_factors=tl.decomposition.parafac(mode0_tensor,rank=rank)
+mode0_feature_factors,mode0_feature_erors=tl.decomposition.parafac(mode0_tensor,rank=rank,return_errors=True)
+mode0_feature_reconstructed_tensor=tl.kruskal_to_tensor(mode0_feature_factors)
+#该句注意除数不能为0，即要运行该句必须进行数据清洗
+#mode0_feature_deviation=(mode0_tensor-mode0_feature_reconstructed_tensor)/mode0_tensor
 mode0_feature_country=np.matmul(mode0_feature_factors[0],np.matrix.transpose(tl.tenalg.khatri_rao([mode0_feature_factors[3],mode0_feature_factors[2],mode0_feature_factors[1]])))
 
-#K-means聚类
-n_clusters=3
+#查看降维后数据与原数据的差异
+#以下语句均需自行在python console进行运行
+#mode0_feature_factors[3]
+#tensor_index[3]
+#sex维度上男性自杀人数远远高于女性，符合常识，因此认为降维得到的factors比较准确地概括了数据本身的特征
+
+mode0_feature_deviation=mode0_tensor-mode0_feature_reconstructed_tensor
+mode0_feature_country_deviation_quartile_25=np.percentile(mode0_feature_deviation,q=25,axis=(1,2,3),interpolation='linear')
+mode0_feature_country_deviation_quartile_50=np.percentile(mode0_feature_deviation,q=50,axis=(1,2,3),interpolation='linear')
+mode0_feature_country_deviation_quartile_75=np.percentile(mode0_feature_deviation,q=75,axis=(1,2,3),interpolation='linear')
+
+#K-means clustering
+n_clusters=4
 kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(mode0_feature_country)
+
 '''
 mode0_country_partition_labels=dict()
 for i in range(len(kmeans.labels_)):
@@ -213,3 +229,7 @@ for i in range(len(kmeans.labels_)):
 '''
 
 
+#Hierarchical clustering
+
+
+#OPTICS
