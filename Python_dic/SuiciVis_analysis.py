@@ -160,6 +160,7 @@ mode2_reconstructed_tensor=tl.kruskal_to_tensor(mode2_factors_errors[0])
 '''
 
 #聚类算法
+#https://scikit-learn.org/stable/modules/clustering.html#optics
 
 #len(mode2_factors_errors[0][0])
 
@@ -254,4 +255,27 @@ from sklearn.neighbors import kneighbors_graph
 connectivity=kneighbors_graph(mode0_feature_country,n_neighbors=10,include_self=False)
 ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(mode0_feature_country))
 #ward[1].labels_
+
+#DBSCAN
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_dbscan.html#sphx-glr-auto-examples-cluster-plot-dbscan-py
+#Key Parameters:eps, min_samples,
+from sklearn.cluster import DBSCAN
+
+db=DBSCAN(eps=25,min_samples=3).fit(mode0_feature_country)
+#此句须在python console自行运行
+#db.labels_
+#sum(db.labels_==-1)#outliers的数量
+#np.max(db.labels_)+1#聚类算法生成的簇的数量
+#labels_中不同正数代表不同类别，-1表示为outliers
+'''参数选择'''
+
 #OPTICS
+#https://scikit-learn.org/stable/auto_examples/cluster/plot_optics.html#sphx-glr-auto-examples-cluster-plot-optics-py
+#Key Parameters:min_samples,
+from sklearn.cluster import OPTICS,cluster_optics_dbscan
+
+clust=OPTICS(min_samples=5,xi=.05,min_cluster_size=0.05)
+clust.fit(mode0_feature_country)
+reachability=clust.reachability_[clust.ordering_]
+labels=clust.labels_[clust.ordering_]
+#labels中不同正数代表不同类别，-1表示为outliers
