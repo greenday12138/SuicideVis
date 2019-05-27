@@ -6,8 +6,6 @@
 '''
 import numpy as np
 import pandas as pd
-import gc
-import psutil
 import sklearn
 import tensorly as tl
 from tensorly.decomposition import parafac
@@ -15,15 +13,19 @@ from sklearn import cluster
 from numpy import matrix
 import matplotlib.pyplot as plt
 from sklearn.cluster import AgglomerativeClustering
+#import gc
+#import psutil
+
 '''
 import os
 import matplotlib.pyplot as plt
 from sqlalchemy import create_engine
 import warnings
 '''
-
+#原数据存储路径
 data_path=r'C:\Users\lenovo\Data_visualization\SuiciVis\data\master.csv'
 
+#读取原数据
 dp=pd.read_csv(data_path)
 dp.dataframeName='The World Suicides Data.csv'
 #dp.head()
@@ -106,11 +108,11 @@ def IndexinTensor(new_index,temp_index):
         count+=1
     return tuple(index)
 
-def DataFrame2Ndarray(df,index,mode,return_index=False):
+def DataFrame2Ndarray(df,index,element,return_index=False):
     '''
     :param df:type:DataFrame
     :param index: type:list
-    :param mode:string
+    :param element:string
     :return:
     '''
     new_index=[]
@@ -124,8 +126,8 @@ def DataFrame2Ndarray(df,index,mode,return_index=False):
         #new_index列表每一个元素都是一个维度，如country维，year维
     tensor=np.zeros(shape=shape)
     for i in range(df.values.shape[0]):
-        temp=df[mode].values[i]
-        temp_index=df[mode].index[i]
+        temp=df[element].values[i]
+        temp_index=df[element].index[i]
         tensor[IndexinTensor(new_index,temp_index)]=temp
         '''
         gc.collect()
@@ -140,17 +142,17 @@ def DataFrame2Ndarray(df,index,mode,return_index=False):
         return tensor
 
 index_list=['country','year','age','sex']
-#mode_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
-#倒数第二个mode项有问题
-mode_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']
+#element_name_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
+#倒数第二个项即' gdp_for_year ($)'读取有问题
+element_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']
 
 
 #number of components
 rank=1
 '''
-mode0_tensor,tensor_index=DataFrame2Ndarray(dp,index_list,mode_list[0],return_index=True)
-mode0_factors_errors=tl.decomposition.parafac(mode0_tensor,rank=rank,return_errors=True)
-mode0_reconstructed_tensor=tl.kruskal_to_tensor(mode0_factors_errors[0])
+element0_tensor,tensor_index=DataFrame2Ndarray(dp,index_list,mode_list[0],return_index=True)
+element0_factors_errors=tl.decomposition.parafac(element0_tensor,rank=rank,return_errors=True)
+element0_reconstructed_tensor=tl.kruskal_to_tensor(element0_factors_errors[0])
 
 mode2_tensor=DataFrame2Ndarray(dp,index_list,mode_list[2])
 mode2_factors_errors=tl.decomposition.parafac(mode2_tensor,rank=rank,return_errors=True)
@@ -183,51 +185,73 @@ class mode_feature:
             return mode_features
         else:
             for i in range(len(mode_list)):
-                mode_features.append(mode_feature(mode=i,tensor=DataFrame2Ndarray(df,index_list,mode=mode_list[i])))
+                mode_features.append(mode_feature(mode=i,tensor=DataFrame2Ndarray(df,index_list,element=element_list[i])))
             return mode_features
 
     #def factors_cluster(self):
 
+class element_tensor:
+    def __init__(self,element):
+        self.elemnt=element
+        self.tensor=None
+    def create_tensor(self,dp,index,return_index):
+        '''
+        :param dp:
+        :param index:
+        :param element:
+        :param return_index:
+        :return:
+        '''
+        self.tensor,error=DataFrame2Ndarray(dp,index=index,element=self.element,return_index=return_index)
+        if return_index==True:
+            return self.tensor,error
+        else:
+            return self.tensor
+
+element_tensor_list=[]
+for i in element_list:
+    element_tensor_list.append(element_tensor(i))
 '''
-mode0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,mode_list[0]))
-mode1_feature=mode_feature(1,DataFrame2Ndarray(dp,index_list,mode_list[1]))
-mode2_feature=mode_feature(2,DataFrame2Ndarray(dp,index_list,mode_list[2]))
-mode3_feature=mode_feature(3,DataFrame2Ndarray(dp,index_list,mode_list[3]))
+
+element0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,element_list[0]))
+mode1_feature=mode_feature(1,DataFrame2Ndarray(dp,index_list,element_list[1]))
+mode2_feature=mode_feature(2,DataFrame2Ndarray(dp,index_list,element_list[2]))
+mode3_feature=mode_feature(3,DataFrame2Ndarray(dp,index_list,element_list[3]))
 '''
 #mode_features=mode_feature(mode=None,tensor=None)
-#mode_features=mode_features.create_mode_features(mode_list=mode_list,func=DataFrame2Ndarray,df=dp,index_list=index_list)
-mode0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,mode_list[0]))
-[temp,tensor_index]=DataFrame2Ndarray(dp,index_list,mode=mode_list[0],return_index=True)
+#mode_features=mode_features.create_mode_features(element_list=element_list,func=DataFrame2Ndarray,df=dp,index_list=index_list)
+element0_feature=mode_feature(0,DataFrame2Ndarray(dp,index_list,element_list[0]))
+[temp,tensor_index]=DataFrame2Ndarray(dp,index_list,element=element_list[0],return_index=True)
 del temp
 
 #维度'country'上的特征矩阵
 
-mode0_tensor=DataFrame2Ndarray(dp,index_list,mode_list[0])
-mode0_feature_factors,mode0_feature_erors=tl.decomposition.parafac(mode0_tensor,rank=rank,return_errors=True)
-mode0_feature_reconstructed_tensor=tl.kruskal_to_tensor(mode0_feature_factors)
+element0_tensor=DataFrame2Ndarray(dp,index_list,element_list[0])
+element0_feature_factors,element0_feature_erors=tl.decomposition.parafac(element0_tensor,rank=rank,return_errors=True)
+element0_feature_reconstructed_tensor=tl.kruskal_to_tensor(element0_feature_factors)
 #该句注意除数不能为0，即要运行该句必须进行数据清洗
-#mode0_feature_deviation=(mode0_tensor-mode0_feature_reconstructed_tensor)/mode0_tensor
-mode0_feature_country=np.matmul(mode0_feature_factors[0],np.matrix.transpose(tl.tenalg.khatri_rao([mode0_feature_factors[3],mode0_feature_factors[2],mode0_feature_factors[1]])))
+#element0_feature_deviation=(element0_tensor-element0_feature_reconstructed_tensor)/element0_tensor
+element0_feature_country=np.matmul(element0_feature_factors[0],np.matrix.transpose(tl.tenalg.khatri_rao([element0_feature_factors[3],element0_feature_factors[2],element0_feature_factors[1]])))
 
 #查看降维后数据与原数据的差异
 #以下语句均需自行在python console进行运行
-#mode0_feature_factors[3]
+#element0_feature_factors[3]
 #tensor_index[3]
 #sex维度上男性自杀人数远远高于女性，符合常识，因此认为降维得到的factors比较准确地概括了数据本身的特征
 
-mode0_feature_deviation=mode0_tensor-mode0_feature_reconstructed_tensor
-mode0_feature_country_deviation_quartile_25=np.percentile(mode0_feature_deviation,q=25,axis=(1,2,3),interpolation='linear')
-mode0_feature_country_deviation_quartile_50=np.percentile(mode0_feature_deviation,q=50,axis=(1,2,3),interpolation='linear')
-mode0_feature_country_deviation_quartile_75=np.percentile(mode0_feature_deviation,q=75,axis=(1,2,3),interpolation='linear')
+element0_feature_deviation=element0_tensor-element0_feature_reconstructed_tensor
+element0_feature_country_deviation_quartile_25=np.percentile(element0_feature_deviation,q=25,axis=(1,2,3),interpolation='linear')
+element0_feature_country_deviation_quartile_50=np.percentile(element0_feature_deviation,q=50,axis=(1,2,3),interpolation='linear')
+element0_feature_country_deviation_quartile_75=np.percentile(element0_feature_deviation,q=75,axis=(1,2,3),interpolation='linear')
 
 #K-means clustering
 n_clusters=10
-kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(mode0_feature_country)
+kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(element0_feature_country)
 
 '''
-mode0_country_partition_labels=dict()
+element0_country_partition_labels=dict()
 for i in range(len(kmeans.labels_)):
-    mode0_country_partition_labels[tensor_index[0].get() == i] = i
+    element0_country_partition_labels[tensor_index[0].get() == i] = i
 '''
 
 
@@ -236,10 +260,10 @@ for i in range(len(kmeans.labels_)):
 #different linkage strategies
 #https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
 clustering=[]
-mode0_feature_factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(mode0_feature_country)
+element0_feature_factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(element0_feature_country)
 for linkage in ('ward','average','complete','single'):
     clustering.append(cluster.AgglomerativeClustering(linkage=linkage,n_clusters=10))
-    clustering[len(clustering)-1].fit(mode0_feature_factors_red)
+    clustering[len(clustering)-1].fit(element0_feature_factors_red)
 #此句须在python console自行运行
 #clustering[0].labels_
 
@@ -248,12 +272,12 @@ for linkage in ('ward','average','complete','single'):
 #https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
 
 ward=[]
-ward.append(AgglomerativeClustering(n_clusters=10,linkage='ward').fit(mode0_feature_country))
+ward.append(AgglomerativeClustering(n_clusters=10,linkage='ward').fit(element0_feature_country))
 #此句须在python console自行运行
 #ward[0].labels_
 from sklearn.neighbors import kneighbors_graph
-connectivity=kneighbors_graph(mode0_feature_country,n_neighbors=10,include_self=False)
-ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(mode0_feature_country))
+connectivity=kneighbors_graph(element0_feature_country,n_neighbors=10,include_self=False)
+ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(element0_feature_country))
 #ward[1].labels_
 
 #DBSCAN
@@ -261,7 +285,7 @@ ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,link
 #Key Parameters:eps, min_samples,
 from sklearn.cluster import DBSCAN
 
-db=DBSCAN(eps=25,min_samples=3).fit(mode0_feature_country)
+db=DBSCAN(eps=25,min_samples=3).fit(element0_feature_country)
 #此句须在python console自行运行
 #db.labels_
 #sum(db.labels_==-1)#outliers的数量
@@ -275,7 +299,7 @@ db=DBSCAN(eps=25,min_samples=3).fit(mode0_feature_country)
 from sklearn.cluster import OPTICS,cluster_optics_dbscan
 
 clust=OPTICS(min_samples=5,xi=.05,min_cluster_size=0.05)
-clust.fit(mode0_feature_country)
+clust.fit(element0_feature_country)
 reachability=clust.reachability_[clust.ordering_]
 labels=clust.labels_[clust.ordering_]
 #labels中不同正数代表不同类别，-1表示为outliers
