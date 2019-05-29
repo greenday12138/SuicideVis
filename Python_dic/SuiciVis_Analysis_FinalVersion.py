@@ -243,48 +243,22 @@ class tensor():
 
     '''聚类算法'''
     def kmeans(self,n_clusters,mode):
-        '''
-        n_clusters=10
-        kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(element0_feature_country)
-        '''
         kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(self.choose_mode(mode))
         return kmeans.labels_#返回值待定
 
-    def hierarchical(self,mode,n_clusters,linkage,connectivity=False,n_eighbors=False):
-        '''
-        #different linkage strategies
-        #https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
-        clustering=[]
-        element0_feature_factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(element0_feature_country)
-        for linkage in ('ward','average','complete','single'):
-            clustering.append(cluster.AgglomerativeClustering(linkage=linkage,n_clusters=10))
-            clustering[len(clustering)-1].fit(element0_feature_factors_red)
-        #此句须在python console自行运行
-        #clustering[0].labels_
-
-
-        #adding connectivity constraints
-        #https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
-
-        ward=[]
-        ward.append(AgglomerativeClustering(n_clusters=10,linkage='ward').fit(element0_feature_country))
-        #此句须在python console自行运行
-        #ward[0].labels_
-        from sklearn.neighbors import kneighbors_graph
-        connectivity=kneighbors_graph(element0_feature_country,n_neighbors=10,include_self=False)
-        ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(element0_feature_country))
-        #ward[1].labels_
-        '''
+    def hierarchical(self,mode,n_clusters,linkage,connectivity=False,n_neighbors=False):
         temp=self.choose_mode(mode)
-        factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(temp)
         if connectivity==True:
+            #https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
             connectivity=kneighbors_graph(temp,n_neighbors=n_neighbors,include_self=False)
             clustering=AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage=linkage).fit(temp)
-            #ward[1].labels_
         else:
+            #https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
+            factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(temp)
             clustering=cluster.AgglomerativeClustering(linkage=linkage,n_clusters=n_clusters)
             clustering.fit(factors_red)
         return clustering.labels_
+
     def DBSCAN(self):
         pass
     def OPTICS(self):
@@ -298,8 +272,8 @@ mode='country'
 #element0_feature_country1=tensor.choose_mode(temp,mode=mode)
 
 n_clusters=10
-temp.kmeans(n_clusters=n_clusters,mode=mode)
-
+#temp.kmeans(n_clusters=n_clusters,mode=mode)
+temp.hierarchical(mode=mode,n_clusters=n_clusters,linkage='ward',connectivity=True,n_neighbors=10)
 class a:
     a=1
 
