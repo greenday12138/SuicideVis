@@ -10,8 +10,10 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
     1）颜色
     Figure区域：a1,a2
         由element0_feature_country_deviation_mean每一项的大小(该数据项未经normalization)决定
-        由论文中When analysts hover over a node, a menu (a4 in Fig. 1 a?) will pop up displaying different options. The options include the dimension to perform partition on, the number of clusters
-        to create and the clustering algorithm to use知，若用户选取mode为year或其他，则颜色应当由对应element0_feature_year_deviation_mean每一项的大小决定
+        由论文中
+        When analysts hover over a node, a menu (a4 in Fig. 1 a?) will pop up displaying different options. The options include the dimension to perform partition on, the number of clusters
+        to create and the clustering algorithm to use
+        知，若用户选取mode为year或其他，则颜色应当由对应element0_feature_year_deviation_mean每一项的大小决定
     2)Data Partition
     Figure区域：a1,a2
         a) 聚类算法(基于原数据降维后的特征矩阵element0_feature_country)
@@ -227,32 +229,73 @@ class tensor():
         self.reconstructed_tensor=tl.kruskal_to_tensor(self.feature_factors)
         self.deviation=self.tensor-self.reconstructed_tensor
 
-    #def partition(self,list,select=True):
-        #if select==True:
+    def partition(self,list,select=True):
+        pass
 
-    def choose_mode(self,mode):#Error
+    def choose_mode(self,mode):
         #获得用户所选mode在index_list中的索引
         index=index_list.index(mode)
-        temp=self.feature_factors
+        #temp=self.feature_factors
+        temp=self.feature_factors.copy()
         temp.pop(index)
         temp=np.matmul(self.feature_factors[index],np.matrix.transpose(tl.tenalg.khatri_rao(temp)))
         return temp#返回值待定
 
     '''聚类算法'''
     def kmeans(self,n_clusters,mode):
-        kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(self.choose_mode(self,mode))
-        return kmeans.lables#返回值待定
-    def hierarchical(self):
-        pass
+        '''
+        n_clusters=10
+        kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(element0_feature_country)
+        '''
+        kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(self.choose_mode(mode))
+        return kmeans.labels_#返回值待定
+
+    def hierarchical(self,mode,n_clusters,linkage,connectivity=False,n_eighbors=False):
+        '''
+        #different linkage strategies
+        #https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
+        clustering=[]
+        element0_feature_factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(element0_feature_country)
+        for linkage in ('ward','average','complete','single'):
+            clustering.append(cluster.AgglomerativeClustering(linkage=linkage,n_clusters=10))
+            clustering[len(clustering)-1].fit(element0_feature_factors_red)
+        #此句须在python console自行运行
+        #clustering[0].labels_
+
+
+        #adding connectivity constraints
+        #https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
+
+        ward=[]
+        ward.append(AgglomerativeClustering(n_clusters=10,linkage='ward').fit(element0_feature_country))
+        #此句须在python console自行运行
+        #ward[0].labels_
+        from sklearn.neighbors import kneighbors_graph
+        connectivity=kneighbors_graph(element0_feature_country,n_neighbors=10,include_self=False)
+        ward.append(AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage='ward').fit(element0_feature_country))
+        #ward[1].labels_
+        '''
+        temp=self.choose_mode(mode)
+        factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(temp)
+        if connectivity==True:
+            connectivity=kneighbors_graph(temp,n_neighbors=n_neighbors,include_self=False)
+            clustering=AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage=linkage).fit(temp)
+            #ward[1].labels_
+        else:
+            clustering=cluster.AgglomerativeClustering(linkage=linkage,n_clusters=n_clusters)
+            clustering.fit(factors_red)
+        return clustering.labels_
     def DBSCAN(self):
         pass
     def OPTICS(self):
         pass
+    def Clustering(self,cluster,mode):
+        pass
 
 temp=tensor(dp,element_list[0])
 mode='country'
-temp.choose_mode(mode)
-element0_feature_country1=tensor.choose_mode(temp,mode=mode)
+#len(temp.choose_mode(mode))
+#element0_feature_country1=tensor.choose_mode(temp,mode=mode)
 
 n_clusters=10
 temp.kmeans(n_clusters=n_clusters,mode=mode)
@@ -269,3 +312,4 @@ b.change()
 b.a
 c=a()
 c.a
+
