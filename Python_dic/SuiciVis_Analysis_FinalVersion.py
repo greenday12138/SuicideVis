@@ -9,7 +9,7 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
     Element:suicides_no
     1）颜色
     Figure区域：a1,a2
-        由element0_feature_country_deviation_mean每一项的大小(该数据项未经normaliztion)决定
+        由element0_feature_country_deviation_mean每一项的大小(该数据项未经normalization)决定
         由论文中When analysts hover over a node, a menu (a4 in Fig. 1 a?) will pop up displaying different options. The options include the dimension to perform partition on, the number of clusters
         to create and the clustering algorithm to use知，若用户选取mode为year或其他，则颜色应当由对应element0_feature_year_deviation_mean每一项的大小决定
     2)Data Partition
@@ -47,7 +47,7 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
                 DBSCAN:
                     Parameters:
                         cluster:string,'DBSCAN'
-                        eps:正数。Any sample that is not a core sample, and is at least eps in distance from any core sample, is considered an outlier by the algorithm.
+                        eps:正数。Maximun radius of th neighborhood.Any sample that is not a core sample, and is at least eps in distance from any core sample, is considered an outlier by the algorithm.
                         min_samples:integer
                     Return:
                         {cluster:(n_clusters,n_outliers,db_labels)}
@@ -96,6 +96,7 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
 
     bubble:
         Parameters:
+
             selected_modes:tuple,例：('China','Iceland','German')
         Return:
 
@@ -115,7 +116,35 @@ from sklearn.neighbors import kneighbors_graph
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import OPTICS,cluster_optics_dbscan
 
-#构建张量
+'''数据读取'''
+
+#原数据存储路径
+data_path=r'C:\Users\lenovo\Data_visualization\SuiciVis\data\master.csv'
+
+#读取原数据
+dp=pd.read_csv(data_path)
+dp.dataframeName='The World Suicides Data.csv'
+
+'''数据清洗'''
+
+#dp.describe()
+#dp.info()
+#数据中'HDI for year'列存在缺失
+#计算每列缺失数据所占百分比
+#dp.isnull().sum()*100/dp.isnull().count()
+
+
+
+'''构建张量'''
+
+#张量的四个维度
+index_list=['country','year','age','sex']
+#张量元素的种类
+element_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']
+#element_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
+#倒数第二个项即' gdp_for_year ($)'读取有问题
+
+rank=1
 
 '''自定义函数区'''
 def List2Dict(list):
@@ -182,3 +211,61 @@ def DataFrame2Ndarray(df,index,element,return_index=False):
     else:
         return tensor
 
+#[temp,tensor_index]=DataFrame2Ndarray(dp,index_list,element=element_list[0],return_index=True)
+#del temp
+
+class tensor():
+    #类属性
+    index_list=['country','year','age','sex']
+    rank=1
+    #mode_matrix=None
+    def __init__(self,df,element):
+        self.element=element
+        #self.index_list=index_list
+        self.tensor,self.tensor_index=DataFrame2Ndarray(df,index_list,element,True)
+        self.feature_factors=tl.decomposition.parafac(self.tensor,rank=rank)
+        self.reconstructed_tensor=tl.kruskal_to_tensor(self.feature_factors)
+        self.deviation=self.tensor-self.reconstructed_tensor
+
+    #def partition(self,list,select=True):
+        #if select==True:
+
+    def choose_mode(self,mode):#Error
+        #获得用户所选mode在index_list中的索引
+        index=index_list.index(mode)
+        temp=self.feature_factors
+        temp.pop(index)
+        temp=np.matmul(self.feature_factors[index],np.matrix.transpose(tl.tenalg.khatri_rao(temp)))
+        return temp#返回值待定
+
+    '''聚类算法'''
+    def kmeans(self,n_clusters,mode):
+        kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(self.choose_mode(self,mode))
+        return kmeans.lables#返回值待定
+    def hierarchical(self):
+        pass
+    def DBSCAN(self):
+        pass
+    def OPTICS(self):
+        pass
+
+temp=tensor(dp,element_list[0])
+mode='country'
+temp.choose_mode(mode)
+element0_feature_country1=tensor.choose_mode(temp,mode=mode)
+
+n_clusters=10
+temp.kmeans(n_clusters=n_clusters,mode=mode)
+
+class a:
+    a=1
+
+    def change(cls):
+        cls.a=2
+
+b=a()
+b.a
+b.change()
+b.a
+c=a()
+c.a
