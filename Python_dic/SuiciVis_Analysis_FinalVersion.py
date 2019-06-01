@@ -4,19 +4,35 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
 
 1.确定所要分析的元素
     与Fig.1不同的是，Fig.1所要分析的只有sale这一元素，而我们可以在element_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']中选取任一元素进行分析
+    此处我们以tensor类对象temp=tensor(dp,element_list[0])为例进行说明
+    dp=pd.read_csv(data_path)
+    dp.dataframeName='The World Suicides Data.csv'
+    #张量的四个维度
+    index_list=['country','year','age','sex']
+    #张量元素的种类
+    element_list=['suicides_no','population','suicides/100k pop','gdp_per_capita ($)']
+
+    temp=tensor(dp,element_list[0])
+
 2.a区域--overview clustering tree
     Mode:Country
     Element:suicides_no
     1）颜色
     Figure区域：a1,a2
-        由element0_feature_country_deviation_mean每一项的大小(该数据项未经normalization)决定
+        由temp.deviation每一项的大小(该数据项未经normalization)决定
+        可在python console通过以下命令查看:
+            temp.deviation
+            np.sum(temp.deviation,axis=(1,2,3))
+            np.sum(temp.deviation,axis=(0,2,3))
+            np.sum(temp.deviation,axis=(1,2,3)).shape
+            np.sum(temp.deviation,axis=(0,2,3)).shape
         由论文中
         When analysts hover over a node, a menu (a4 in Fig. 1 a?) will pop up displaying different options. The options include the dimension to perform partition on, the number of clusters
         to create and the clustering algorithm to use
-        知，若用户选取mode为year或其他，则颜色应当由对应element0_feature_year_deviation_mean每一项的大小决定
+        知，若用户选取mode为year或其他，则颜色应当由对应temp.deviation每一项的大小决定
     2)Data Partition
     Figure区域：a1,a2
-        a) 聚类算法(基于原数据降维后的特征矩阵element0_feature_country)
+        a) 聚类算法(基于原数据降维后的特征矩阵temp.feature_factors)
             例：
                 kmeans.labels_
                     kmeans.labels.shape:(101,)
@@ -25,85 +41,110 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
             不同算法需要用户提供的各种参数及返回值如下：
                 Kmeans:
                     Parameters:
-                        cluster:string,所选用聚类算法名称，如kmeans算法对应的cluster即为"kmeans"
                         n_clusters:integer,产生聚类的个数
+                        mode:用来做聚类的维度，如这里我们要对国家聚类，mode='country'
                     Return:
-                        {cluster:(n_clusters,kmeans_labels)}
-                        cluster:string,'kmeans'
-
+                        (kmeans_labels,n_clusters)
                         n_clusters:integer,产生聚类个数
-                        kmeans_labels:list,每个值对应该国家所属簇
-
+                        kmeans_labels:array,每个值对应该国家所属簇
+                    以下代码可以python console查看：
+                        mode='country'
+                        n_clusters=10
+                        temp.kmeans(n_clusters=n_clusters,mode=mode)
                 Hierarchical clustering:
                     Parameters:
-                        cluster:string,'hierarchical'
                         n_clusters:integer,产生聚类的个数
                         linkage: ('ward','average','complete','single')中之一或其中几个
                         connectivity:bool
+                        n_neighbors:
                     Return:
-                        {cluster:(n_clusters,hierarchical_labels)}；若linkage为多个，则返回值为元素为{cluster:(n_clusters,hierarchical_labels)}的tuple（元组）
-                        cluster:string,'hierarchical'
+                        (hierarchical_labels,n_clusters,)
                         n_clusters:integer,产生聚类个数
                         hierarchical_labels:list,每个值对应该国家所属簇
+                    以下代码可在python console查看：
+                        n_clusters=10
+                        linkage='ward'
+                        n_neighbors=10
+                        temp.hierarchical(mode=mode,n_clusters=n_clusters,linkage=linkage,connectivity=True,n_neighbors=n_neighbors)
 
                 DBSCAN:
                     Parameters:
-                        cluster:string,'DBSCAN'
                         eps:正数。Maximun radius of th neighborhood.Any sample that is not a core sample, and is at least eps in distance from any core sample, is considered an outlier by the algorithm.
                         min_samples:integer
                     Return:
-                        {cluster:(n_clusters,n_outliers,db_labels)}
-                        cluster:string,'DBSCAN'
+                        (db_labels,n_clusters,n_outliers,percentage of outliers)
                         n_clusters:integer,产生聚类的个数
                         n_outliers:integer,outliers的个数
                         db_labels:list,每个正整数值对应该国家所属簇；-1表示该国家被归入了outliers
+                        percentage of ouliers:outlier所占比例
+                    以下代码可在python console中实现：
+                        temp.DBSCAN(eps=25,min_samples=3)
 
                 OPTICS
                     Parameters:
-                        cluster:string,'OPTICS'
                         min_samples:integer
                         xi:
                         min_cluster_size:
                     Return:
-                        {cluster:(n_clusters,n_outliers,op_labels)}
-                        cluster:string,'OPTICS'
+                        (op_labels,n_clusters,n_outliers,percentage,reachability)
                         n_clusters:integer,产生聚类的个数
                         n_outliers:integer,outliers的个数
                         op_labels:list,每个正整数值对应该国家所属簇；-1表示该国家被归入了outliers
+                        percentage:outlier所占比例
+                    以下代码可在python console查看：
+                        temp.OPTICS(5,.05,0.05)
 
         b) 用户自行划分
             操作一：在country维度上用户自行划分几个类
                 Figure: Fig.3(TPFlow: Progressive Partition and Multidimensional Pattern Extraction for Large-Scale Spatio-Temporal Data Analysis)
-                相当于将element0_tensor分为几个sub-tensor
+                相当于将temp.tensor分为几个sub-tensor
     3)
     Figure区域：a3
     由于该区域是由用户自行划分出来的，后端可根据用户操作划分sub-tensor
     参见论文Fig. 6d区域的解释
-
+    以下代码可在pyhton console实现：
+        temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},False)
+        temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},True)
+        partition(temp.tensor,'country':['China','Germany'],'year':[1985,2001,2003]},False)
 3.b,c区域
     Mode:Country
     Element:suicides_no
 
     bar_line:
         Parameters:
-            selected_modes:tuple,例：('China','Iceland','Germany')
-            axis:tuple,,表示坐标轴表示的区间，例：(1985,2006)即表示展示1985至2006年的数据
+            selected_modes:
+            axis:tuple,,表示坐标轴表示的区间
+            show_mode:
         Return:
-            bar_charts:list,其元素为{selected_mode:value_list}
-            selected_mode:string,例，'China'
-            value_list:
+            eg.
+            {'Albania': array([154., 119., 124.]),
+             'Germany': array([11654., 11167., 11155.])}
+
+        以下代码可在python console实现：
+            temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]})
+            temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
+
 4.d区域
     Mode:Country
     Element: suicides_no
 
     bubble:
         Parameters:
-
-            selected_modes:tuple,例：('China','Iceland','German')
+            selected_modes:dict
+            axis:dict
+            show_mode:string
         Return:
+            eg.
+                {'Albania': array([144., 253.]), 'Germany': array([ 9017., 24959.])}
+
+        以下代码可在python console实现：
+            temp.bubble({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
 
 
 '''
+
+'''所有测试用例代码见最后注释区'''
+
 
 import numpy as np
 import pandas as pd
@@ -423,10 +464,15 @@ class tensor():
         return bubble
 
 
+'''测试用例'''
+#temp=tensor(dp,element_list[0])
 
-temp=tensor(dp,element_list[0])
-mode='country'
-n_clusters=10
+#np.sum(temp.deviation,axis=(1,2,3))
+#np.sum(temp.deviation,axis=(0,2,3))
+#np.sum(temp.deviation,axis=(1,2,3)).shape
+#np.sum(temp.deviation,axis=(0,2,3)).shape
+#mode='country'
+#n_clusters=10
 
 #len(temp.choose_mode(mode))
 #temp.kmeans(n_clusters=n_clusters,mode=mode)
@@ -439,5 +485,5 @@ n_clusters=10
 
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]})
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
-temp.bubble({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
+#temp.bubble({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
 
