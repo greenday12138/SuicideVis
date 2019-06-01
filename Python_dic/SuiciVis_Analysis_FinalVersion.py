@@ -327,7 +327,7 @@ class tensor():
         if connectivity==True:
             #https://scikit-learn.org/stable/auto_examples/cluster/plot_ward_structured_vs_unstructured.html#sphx-glr-auto-examples-cluster-plot-ward-structured-vs-unstructured-py
             connectivity=kneighbors_graph(temp,n_neighbors=n_neighbors,include_self=False)
-            clustering=AgglomerativeClustering(n_clusters=10,connectivity=connectivity,linkage=linkage).fit(temp)
+            clustering=AgglomerativeClustering(n_clusters=n_clusters,connectivity=connectivity,linkage=linkage).fit(temp)
         else:
             #https://scikit-learn.org/stable/auto_examples/cluster/plot_digits_linkage.html#sphx-glr-auto-examples-cluster-plot-digits-linkage-py
             factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(temp)
