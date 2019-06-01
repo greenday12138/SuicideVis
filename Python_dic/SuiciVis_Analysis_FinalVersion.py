@@ -382,15 +382,46 @@ class tensor():
         temp_index.remove(index_list.index(modes_keys[0]))
         temp_index.remove(index_list.index(axis_keys[0]))
         #sum=np.sum(temp_tensor,axis=)
+        '''
         if type(show_modes)==type(False):
-            temp_list=list(selected_modes.values())
+            #temp_list=list(selected_modes.values())
             count=0
-            for i in list(selected_modes.values()): #np.sum(temp_tensor,axis=temp_index)
-                bar_charts[i]=
+            for i in list(selected_modes.values())[0]: #np.sum(temp_tensor,axis=tuple(temp_index))
+                #if index_list.index(modes_keys[0])==0:
+                bar_charts[i]=np.sum(temp_tensor,axis=tuple(temp_index))[count]
+                count+=1
+            del count
+            return bar_charts
         else:
-            pass
-    def bubble(self):
-        pass
+            temp_index.remove(index_list.index(show_modes))
+        '''
+        if type(show_modes)!=type(False):
+            temp_index.remove(index_list.index(show_modes))
+            #temp_list=list(selected_modes.values())
+        count=0
+        for i in list(selected_modes.values())[0]: #np.sum(temp_tensor,axis=tuple(temp_index))
+            #if index_list.index(modes_keys[0])==0:
+            bar_charts[i]=np.sum(temp_tensor,axis=tuple(temp_index))[count]
+            count+=1
+        del count
+        return bar_charts
+
+    def bubble(self,selected_modes,show_mode):
+        bubble=dict()
+        temp_tensor=partition(self.tensor,selected_modes,self.element,True)
+        temp_tensor=partition(temp_tensor,axis,self.element,True)
+        temp_index=list(range(len(index_list)))
+        modes_keys=list(selected_modes.keys())
+        temp_index.remove(index_list.index(modes_keys[0]))
+        temp_index.remove(index_list.index(show_mode))
+        count=0
+        for i in list(selected_modes.values())[0]: #np.sum(temp_tensor,axis=tuple(temp_index))
+            #if index_list.index(modes_keys[0])==0:
+            bubble[i]=np.sum(temp_tensor,axis=tuple(temp_index))[count]
+            count+=1
+        del count
+        return bubble
+
 temp=tensor(dp,element_list[0])
 mode='country'
 n_clusters=10
@@ -404,7 +435,9 @@ n_clusters=10
 #temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},False).shape
 #temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},True).shape
 
-temp.bar_line({'country':['Albania','Germany']},{'year':[1985,2001,2003]})
+#temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]})
+#temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
+temp.bubble({'country':['Albania','Germany']},'sex')
 '''
 temp={'country':'Germany'}
 temp.values()
