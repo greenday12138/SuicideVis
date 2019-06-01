@@ -86,8 +86,8 @@ Figure:Fig.1(TPFlow: Progressive Partition and Multidimensional Pattern Extracti
 
     bar_line:
         Parameters:
-            selected_modes:tuple,例：('China','Iceland','German')
-            axis:tuple,例：(1985,2006)
+            selected_modes:tuple,例：('China','Iceland','Germany')
+            axis:tuple,,表示坐标轴表示的区间，例：(1985,2006)即表示展示1985至2006年的数据
         Return:
             bar_charts:list,其元素为{selected_mode:value_list}
             selected_mode:string,例，'China'
@@ -112,11 +112,11 @@ import tensorly as tl
 from tensorly.decomposition import parafac
 from sklearn import cluster
 from numpy import matrix
-import matplotlib.pyplot as plt
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.neighbors import kneighbors_graph
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import OPTICS,cluster_optics_dbscan
+#import matplotlib.pyplot as plt
 
 '''数据读取'''
 
@@ -131,18 +131,17 @@ dp.dataframeName='The World Suicides Data.csv'
 
 #dp.describe()
 #dp.info()
-#数据中'HDI for year'列存在缺失
+
 #计算每列缺失数据所占百分比
 #dp.isnull().sum()*100/dp.isnull().count()
-
-
+#数据中'HDI for year'列缺失率达69%
 
 '''构建张量'''
 
 #张量的四个维度
 index_list=['country','year','age','sex']
 #张量元素的种类
-element_list=['suicides_no','population','suicides/100k pop','HDI for year','gdp_per_capita ($)']
+element_list=['suicides_no','population','suicides/100k pop','gdp_per_capita ($)']
 #element_list=['suicides_no','population','suicides/100k pop','HDI for year',' gdp_for_year ($)','gdp_per_capita ($)']
 #倒数第二个项即' gdp_for_year ($)'读取有问题
 
@@ -206,15 +205,58 @@ def DataFrame2Ndarray(df,index,element,return_index=False):
         mem=psutil.virtual_memory()
         print('Memory available in GB'+str(mem.available/(1024**3)))
         '''
-        #del temp
-        #del temp_index
     if return_index==True:
         return tensor,new_index
     else:
         return tensor
 
-#[temp,tensor_index]=DataFrame2Ndarray(dp,index_list,element=element_list[0],return_index=True)
-#del temp
+def return_tensor_inex(key,search_list,element):
+    #key,search_list,index_list,tensor_list
+    index=index_list.index(key)
+    return_list=[]
+    temp,tensor_index=DataFrame2Ndarray(dp,index_list,element,True)
+    del temp
+    for i in search_list:
+        return_list.append(tensor_index[index][i])
+    return return_list
+#return_tensor_inex('country',['Germany','Albania'],'suicides_no')
+
+
+def partition(tensor,dict,element,select=True):
+    '''
+    :param dict:
+    :param select:
+    :return:
+    '''
+    '''
+    {'country':['China','Germany'],'year':[1985,2001,2003]}
+    '''
+    #temp_tensor=np.copy(self.tensor)
+    if select==False:
+        flag=0
+        for i in range(len(index_list)):
+            if type(dict.get(index_list[i]))!= type(None):
+                flag+=1
+                select_index_list=return_tensor_inex(index_list[i],dict[index_list[i]],element)
+                if flag==1:
+                    temp_tensor=np.delete(tensor,select_index_list,axis=i)
+                    continue
+                temp_tensor=np.delete(temp_tensor,select_index_list,axis=i)
+
+    else:
+        flag=0
+        for i in range(len(index_list)):
+            if type(dict.get(index_list[i]))!= type(None):
+                flag+=1
+                select_index_list=return_tensor_inex(index_list[i],dict[index_list[i]],element)
+                temp_index_list=list(range(tensor.shape[i]))
+                for j in select_index_list:
+                    temp_index_list.remove(j)
+                if flag==1:
+                    temp_tensor=np.delete(tensor,temp_index_list,axis=i)
+                    continue
+                temp_tensor=np.delete(temp_tensor,temp_index_list,axis=i)
+    return temp_tensor
 
 class tensor():
     #类属性
@@ -223,14 +265,46 @@ class tensor():
     #mode_matrix=None
     def __init__(self,df,element):
         self.element=element
-        #self.index_list=index_list
         self.tensor,self.tensor_index=DataFrame2Ndarray(df,index_list,element,True)
         self.feature_factors=tl.decomposition.parafac(self.tensor,rank=rank)
         self.reconstructed_tensor=tl.kruskal_to_tensor(self.feature_factors)
         self.deviation=self.tensor-self.reconstructed_tensor
 
-    def partition(self,list,select=True):
-        pass
+    def partition(self,dict,select=True):
+        '''
+        :param dict:
+        :param select:
+        :return:
+        '''
+        '''
+        {'country':['China','Germany'],'year':[1985,2001,2003]}
+        '''
+        #temp_tensor=np.copy(self.tensor)
+        if select==False:
+            flag=0
+            for i in range(len(index_list)):
+                if type(dict.get(index_list[i]))!= type(None):
+                    flag+=1
+                    select_index_list=return_tensor_inex(index_list[i],dict[index_list[i]],self.element)
+                    if flag==1:
+                        temp_tensor=np.delete(self.tensor,select_index_list,axis=i)
+                        continue
+                    temp_tensor=np.delete(temp_tensor,select_index_list,axis=i)
+
+        else:
+            flag=0
+            for i in range(len(index_list)):
+                if type(dict.get(index_list[i]))!= type(None):
+                    flag+=1
+                    select_index_list=return_tensor_inex(index_list[i],dict[index_list[i]],self.element)
+                    temp_index_list=list(range(self.tensor.shape[i]))
+                    for j in select_index_list:
+                        temp_index_list.remove(j)
+                    if flag==1:
+                        temp_tensor=np.delete(self.tensor,temp_index_list,axis=i)
+                        continue
+                    temp_tensor=np.delete(temp_tensor,temp_index_list,axis=i)
+        return temp_tensor
 
     def choose_mode(self,mode):
         #获得用户所选mode在index_list中的索引
@@ -242,9 +316,11 @@ class tensor():
         return temp#返回值待定
 
     '''聚类算法'''
+    #各个算法的说明见：
+    #https://scikit-learn.org/stable/modules/clustering.html
     def kmeans(self,n_clusters,mode):
         kmeans=sklearn.cluster.KMeans(n_clusters=n_clusters,random_state=0).fit(self.choose_mode(mode))
-        return kmeans.labels_#返回值待定
+        return kmeans.labels_,n_clusters#返回值待定
 
     def hierarchical(self,mode,n_clusters,linkage,connectivity=False,n_neighbors=False):
         temp=self.choose_mode(mode)
@@ -257,33 +333,80 @@ class tensor():
             factors_red=sklearn.manifold.SpectralEmbedding(n_components=2).fit_transform(temp)
             clustering=cluster.AgglomerativeClustering(linkage=linkage,n_clusters=n_clusters)
             clustering.fit(factors_red)
-        return clustering.labels_
+        return clustering.labels_,n_clusters
 
-    def DBSCAN(self):
-        pass
-    def OPTICS(self):
-        pass
-    def Clustering(self,cluster,mode):
-        pass
+    def DBSCAN(self,eps,min_samples):
+        #https://scikit-learn.org/stable/auto_examples/cluster/plot_dbscan.html#sphx-glr-auto-examples-cluster-plot-dbscan-py
+        '''
+        #sum(db.labels_==-1)#outliers的数量
+        #np.max(db.labels_)+1#聚类算法生成的簇的数量
+        #labels_中不同正数代表不同类别，-1表示为outliers
+        '''
+        temp=self.choose_mode(mode)
+        db=DBSCAN(eps=eps,min_samples=min_samples).fit(temp)
+        return db.labels_,np.max(db.labels_)+1,sum(db.labels_==-1),sum(db.labels_==-1)/len(db.labels_)
 
+    def OPTICS(self,min_samples,xi,min_cluster_size):
+        #https://scikit-learn.org/stable/auto_examples/cluster/plot_optics.html#sphx-glr-auto-examples-cluster-plot-optics-py
+        '''
+        :param min_samples:
+        :param xi:
+        :param min_cluster_size:
+        :return:
+        '''
+        temp=self.choose_mode(mode)
+        clustering=OPTICS(min_samples=min_samples,xi=xi,min_cluster_size=min_cluster_size)
+        clustering.fit(temp)
+        reachability=clustering.reachability_[clustering.ordering_]
+        labels=clustering.labels_[clustering.ordering_]
+        return labels,np.max(labels)+1,sum(labels==-1),sum(labels==-1)/len(labels),reachability
+
+    def bar_line(self,selected_modes,axis,show_modes=False):
+        '''
+            selected_modes:dict,例：{'country':('China','Iceland','Germany')}
+            axis:dict,,表示坐标轴表示的区间，例：{'year':(1998,1999,2000,2001}即表示展示1998至2001年的数据
+            show_modes:dict,例：{'sex':('male','female')}
+        Return:
+            bar_charts:list,其元素为{selected_mode:value_list}
+            selected_mode:string,例，'China'
+            value_list:
+        '''
+        bar_charts=dict()
+        temp_tensor=partition(self.tensor,selected_modes,self.element,True)
+        temp_tensor=partition(temp_tensor,axis,self.element,True)
+        temp_index=list(range(len(index_list)))
+        #del_index=[]
+        #del_index.append(index_list.index(selected_modes.keys))
+        #del_index.append(index_list.index(axis.keys))
+        modes_keys,axis_keys=list(selected_modes.keys()),list(axis.keys())
+        temp_index.remove(index_list.index(modes_keys[0]))
+        temp_index.remove(index_list.index(axis_keys[0]))
+        #sum=np.sum(temp_tensor,axis=)
+        if type(show_modes)==type(False):
+            temp_list=list(selected_modes.values())
+            count=0
+            for i in list(selected_modes.values()): #np.sum(temp_tensor,axis=temp_index)
+                bar_charts[i]=
+        else:
+            pass
+    def bubble(self):
+        pass
 temp=tensor(dp,element_list[0])
 mode='country'
-#len(temp.choose_mode(mode))
-#element0_feature_country1=tensor.choose_mode(temp,mode=mode)
-
 n_clusters=10
+
+#len(temp.choose_mode(mode))
 #temp.kmeans(n_clusters=n_clusters,mode=mode)
-temp.hierarchical(mode=mode,n_clusters=n_clusters,linkage='ward',connectivity=True,n_neighbors=10)
-class a:
-    a=1
+#temp.hierarchical(mode=mode,n_clusters=n_clusters,linkage='ward',connectivity=True,n_neighbors=10)
+#temp.DBSCAN(eps=25,min_samples=3)
+#temp.OPTICS(5,.05,0.05)
 
-    def change(cls):
-        cls.a=2
+#temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},False).shape
+#temp.partition({'country':['Albania','Germany'],'year':[1985,2001,2003]},True).shape
 
-b=a()
-b.a
-b.change()
-b.a
-c=a()
-c.a
-
+temp.bar_line({'country':['Albania','Germany']},{'year':[1985,2001,2003]})
+'''
+temp={'country':'Germany'}
+temp.values()
+temp.
+'''
