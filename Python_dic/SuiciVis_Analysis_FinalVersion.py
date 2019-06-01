@@ -422,6 +422,8 @@ class tensor():
         del count
         return bubble
 
+
+
 temp=tensor(dp,element_list[0])
 mode='country'
 n_clusters=10
@@ -437,9 +439,5 @@ n_clusters=10
 
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]})
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
-temp.bubble({'country':['Albania','Germany']},'sex')
-'''
-temp={'country':'Germany'}
-temp.values()
-temp.
-'''
+#temp.bubble({'country':['Albania','Germany']},'sex')
+
