@@ -409,7 +409,7 @@ class tensor():
     def bubble(self,selected_modes,show_mode):
         bubble=dict()
         temp_tensor=partition(self.tensor,selected_modes,self.element,True)
-        temp_tensor=partition(temp_tensor,axis,self.element,True)
+        #temp_tensor=partition(temp_tensor,axis,self.element,True)
         temp_index=list(range(len(index_list)))
         modes_keys=list(selected_modes.keys())
         temp_index.remove(index_list.index(modes_keys[0]))
@@ -424,7 +424,7 @@ class tensor():
 
 
 
-temp=tensor(dp,element_list[0])
+temp=tensor(dp,element_list[1])
 mode='country'
 n_clusters=10
 
@@ -439,5 +439,5 @@ n_clusters=10
 
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]})
 #temp.bar_line({'country':['Albania','Germany']},{'year':[1998,2001,2003]},'sex')
-#temp.bubble({'country':['Albania','Germany']},'sex')
+temp.bubble({'country':['Albania','Germany']},'sex')
 
