@@ -4,6 +4,8 @@ var TempArray={};
 var TargetGeo=null;
 //"Amsterdam": [4.895168,52.370216],
 
+//地理数据预处理
+
 fs.readFile("./CountryLocation.json",function(err,data){
     if(err){
         throw err;
