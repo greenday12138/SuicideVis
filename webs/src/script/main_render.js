@@ -8,5 +8,4 @@ var maychart=echarts.init(document.getElementById("left-earth"));
 
 var riverchart=echarts.init(document.getElementById("river"));
 
-//var Scatterchart=echarts.init(document.getElementById("Scatter"));
 var ScatterChart=echarts.init(document.getElementById("Scatter"));
