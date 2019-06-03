@@ -4,7 +4,7 @@ const { app, BrowserWindow } = require('electron')
 
 function createWindow () {   
   // 创建浏览器窗口
-  let win = new BrowserWindow({ width: 1280, height: 720 , frame: true})
+  let win = new BrowserWindow({ width: 1280, height: 780 , frame: true})
 
   // 然后加载 app 的 index.html.
   win.loadFile('./webs/main.html')
