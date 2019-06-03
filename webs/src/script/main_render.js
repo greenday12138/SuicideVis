@@ -4,8 +4,12 @@
 
 M.AutoInit();
 
+//获取图表渲染组件
+
 var maychart=echarts.init(document.getElementById("left-earth"));
 
 var riverchart=echarts.init(document.getElementById("river"));
 
 var ScatterChart=echarts.init(document.getElementById("Scatter"));
+
+//
