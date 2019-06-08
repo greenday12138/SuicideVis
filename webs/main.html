@@ -15,7 +15,7 @@
       <ul class="right" style="-webkit-app-region: no-drag">
         <li><a href="#">成员名单</a></li>
         <li><a href="#">使用说明</a></li>
-        <li><a id="link-git" href="#">view on GitHub</a></li>
+        <li><a href="https://github.com/greenday12138/SuicideVis">view on GitHub</a></li>
       </ul>
     </div>
   </nav>
@@ -35,12 +35,12 @@
 
     <div class="col s12">
 
-      <div class="col s7">
+      <div class="col s8">
         <!--占据页面3/4-->
         <div id="left-earth" style="width: 100%;height:100%;"></div>
       </div>
 
-      <div class="col s5">
+      <div class="col s4">
 
         <!--style="position: relative; overflow: hidden; width: 60%; height: 90%; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"-->
         <div>
@@ -79,25 +79,19 @@
     <!--脚本区域-->
     <script type="text/javascript" src="./materialize/js/materialize.min.js"></script>
     <script src="echarts/echarts.min.js"></script>
-    <script src="echarts/extension/echarts-gl.js"></script>
     <script src="echarts/extension/world.js"></script>
 
 
     <script src="echarts/extension/dataTool.min.js"></script>
 
-
-    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
-
-    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-
-
+    <script src="src/script/DATA.js"></script>
 
     <script src="src/script/main_render.js"></script>
-    <script src="./src/script/main_logic.js"></script>
     <script src="src/script/main_echarts_functions.js"></script>
-
-    <script src="src/script/test.js"></script>
-    <!--这一行请在测试结束后注释掉-->
+    
+    <script src="src/script/renderEarth.js"></script>
+    <script src="src/script/renderRiver.js"></script>
+    <script src="src/script/renderFinal.js"></script>
 </body>
 
 </html>
