@@ -1,5 +1,10 @@
-
-var option1 = {
+/*
+文件名：ScatterPointData.json*/
+var optionDefault = {
+    title:{
+        text:"United States",//predefined first page
+        padding:25
+    },
 
     tooltip: {
         trigger: 'axis',
@@ -12,7 +17,7 @@ var option1 = {
             }
         }
     },
-
+    
     legend: {
         data: ['MALE', 'FEMALE']
     },
@@ -21,6 +26,7 @@ var option1 = {
         top: 50,
         bottom: 50,
         axisTick: {},
+
         axisLabel: {
             show: true
         },
@@ -55,10 +61,15 @@ var option1 = {
     ]
 };
 
-riverchart.setOption(option1);
+riverchart.setOption(optionDefault);
 
-function MakeUpRiverOption(r_data){
+function MakeUpRiverOption(r_data,m_name){
     var temp = {
+        title:{
+            text:m_name,
+            padding:25 
+        },
+
         tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -115,8 +126,8 @@ function MakeUpRiverOption(r_data){
     return temp;
 }
 
-function RefreshRiverChart(r_data){
-    riverchart.setOption(MakeUpRiverOption(r_data));
+function RefreshRiverChart(r_data,m_name){
+    riverchart.setOption(MakeUpRiverOption(r_data,m_name));
 }
 
 

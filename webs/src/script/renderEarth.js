@@ -312,5 +312,7 @@ maychart.setOption(option);
 maychart.on('click', function (params) {
     //console.log(params);
     //console.log(RiverData[params.name])
-    RefreshRiverChart(RiverData[params.name])
+    temp=RiverData[params.name];
+    
+    RefreshRiverChart(temp,params.name)
 });

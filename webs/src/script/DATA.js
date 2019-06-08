@@ -9630,7 +9630,7 @@ var RiverData={
     "Cabo Verde": [
         [
             "1985/01/01",
-            null,
+            19,
             "MALE"
         ],
         [
@@ -9790,7 +9790,7 @@ var RiverData={
         ],
         [
             "1985/01/01",
-            null,
+            28,
             "FEMALE"
         ],
         [
@@ -28306,7 +28306,7 @@ var RiverData={
     "Russian Federation": [
         [
             "1985/01/01",
-            null,
+            30000,
             "MALE"
         ],
         [
@@ -28466,7 +28466,7 @@ var RiverData={
         ],
         [
             "1985/01/01",
-            null,
+            30000,
             "FEMALE"
         ],
         [
