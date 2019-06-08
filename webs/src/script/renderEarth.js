@@ -288,7 +288,7 @@ option = {
             },
             z: 100,
             blendMode: 'lighter',
-            data: rawData
+            data: Multiline
         }
     ]
 };
