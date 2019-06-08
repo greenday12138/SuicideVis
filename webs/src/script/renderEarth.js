@@ -157,10 +157,10 @@ option = {
                 shadowColor: 'rgba(0, 0, 0, 0.5)'
             }
         },
-        left: '6%',
+        left: '4%',
         top: 40,
-        bottom: '54%',
-        right: '14%',
+        bottom: '40%',
+        right: '4%',
         roam: true
         // itemStyle: {
         //     normal: {
@@ -194,9 +194,9 @@ option = {
     }],
     parallel: {
         top: '65%',
-        left: 60,
+        left: 20,
         right: 20,
-        bottom: 100,
+        bottom: 50,
         axisExpandable: true,
         axisExpandCenter: 15,
         axisExpandCount: 10,
