@@ -1,5 +1,4 @@
-//渲染世界地图和下方图表
-const fs = require('fs');
+
 
 function GetGeoData() {
     fs.readFile("./webs/static/GeoData.data", function (err, data) {
@@ -178,7 +177,7 @@ option = {
         show: true,
         left: 0,
         right: 0,
-        top: '48%',
+        top: '63%',
         bottom: 0,
         borderColor: 'transparent',
         backgroundColor: '#404a59',
@@ -194,7 +193,7 @@ option = {
         z: 199
     }],
     parallel: {
-        top: '50%',
+        top: '65%',
         left: 60,
         right: 20,
         bottom: 100,
@@ -285,7 +284,7 @@ option = {
             type: 'map',
             geoIndex: 0,
             // tooltip: {show: false},
-            data: ,
+            data: makeMapData(rawData),
         },
         {
             name: 'parallel',
