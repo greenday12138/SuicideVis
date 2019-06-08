@@ -84,7 +84,8 @@ function makeParallelAxis(schema) {
 option = {
     backgroundColor: new echarts.graphic.RadialGradient(0.5, 0.5, 0.4, [{
         offset: 0,
-        color: '#4b5769'
+        color:'#4b5769' 
+        //'#4b5769'
     }, {
         offset: 1,
         color: '#404a59'
@@ -224,7 +225,8 @@ option = {
                 // show: false,
                 lineStyle: {
                     width: 1,
-                    color: 'rgba(255,255,255,0.3)'
+                    color: '#acb4c5'
+                    //'rgba(255,255,255,0.3)'
                 }
             },
             axisTick: {
@@ -245,7 +247,7 @@ option = {
         text: ['High','Low'],
         seriesIndex: [1],
         inRange: {
-            color: ['#e0ffff', '#006edd']
+            color: ['#1a9641', '#d7191c']
         },
         calculable : true
     },
