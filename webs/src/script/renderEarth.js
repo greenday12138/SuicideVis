@@ -230,13 +230,21 @@ option = {
 
  visualMap: {
     min: 0,
-        max: 1500,
+        max: 500,
         left: 'left',
         top: 'bottom',
         text: ['High','Low'],
         seriesIndex: [1],
         inRange: {
+<<<<<<< Updated upstream
             color: ['#1a9641', '#d7191c']
+=======
+            color: ['#1a9641', 
+            '#a6d96a',
+           '#ffffbf',
+            '#a6d96a','#1a9641'
+            ]
+>>>>>>> Stashed changes
         },
         calculable : true
     },
