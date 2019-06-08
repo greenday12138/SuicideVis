@@ -40,10 +40,10 @@ function makeMapData(rawData) {
     for (var i = 0; i < rawData.length; i++) {
         var geoCoord = geoCoordMap[rawData[i][0]];
         if (geoCoord) {
-            console.log({
-                name: rawData[i][0],
-                value: geoCoord.concat(rawData[i][1])
-            });
+            //console.log({
+            //    name: rawData[i][0],
+             //   value: geoCoord.concat(rawData[i][1])
+            //});
             mapData.push({
                 name: rawData[i][0],
                 value: geoCoord.concat(rawData[i][1])
@@ -308,3 +308,9 @@ option = {
 
 
 maychart.setOption(option);
+
+maychart.on('click', function (params) {
+    //console.log(params);
+    //console.log(RiverData[params.name])
+    RefreshRiverChart(RiverData[params.name])
+});
