@@ -28,7 +28,7 @@ var optionDefault = {
         axisTick: {},
 
         axisLabel: {
-            show: false
+            show: true
         },
         type: 'time',
         axisPointer: {
