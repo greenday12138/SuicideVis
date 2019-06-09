@@ -93,9 +93,15 @@ option = {
     tooltip: {
         trigger: 'item',
         formatter: function (params) {
+<<<<<<< HEAD
             var value = (params.value + '').split('.');
             value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, '$1,') + '.' + value[1];
             return params.seriesName + '<br/>' + params.name + ' : ' + value;
+=======
+            return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2]+'<br/>'
+                    + "死亡人数" + ' : ' + params.value[3]+'<br/>'
+                    + "GDP" + ' : ' + params.value[4];
+>>>>>>> parent of 77fcd87... emmmm
         }
     },
     //gong ju kuang
@@ -262,9 +268,18 @@ option = {
                 }
             },
             //symbolSize: 10,
+<<<<<<< HEAD
             symbolSize: function (data) {
                  return Math.max(0, data[2] / 20);
              },
+=======
+            symbolSize: function (value) {
+                console.log(value);
+                console.log(RangeDeath);
+
+                return Math.max(0, Math.sqrt(value[3]/RangeDeath.max)*60);
+            },
+>>>>>>> parent of 77fcd87... emmmm
             itemStyle: {
                 normal: {
                     borderColor: '#fff',
