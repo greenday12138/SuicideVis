@@ -31,7 +31,8 @@ var schema = [
     "2012",
     "2013",
     "2014",
-    "2015"
+    "2015",
+    "2016"
 ];
 
 
@@ -97,7 +98,7 @@ option = {
     tooltip: {
         trigger: 'item',
         formatter: function (params) {
-            return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2]+'<br/>'
+            return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2].toFixed(2)+"每十万人"+'<br/>'
                     + "死亡人数" + ' : ' + params.value[3]+'<br/>'
                     + "GDP" + ' : ' + params.value[4];
         }
@@ -221,7 +222,9 @@ option = {
                 }
             },
             axisTick: {
-                show: false
+                show: false,
+                
+
             },
             splitLine: {
                 show: false
@@ -271,8 +274,8 @@ option = {
             },
             //symbolSize: 10,
             symbolSize: function (value) {
-                console.log(value);
-                console.log(RangeDeath);
+                ///console.log(value);
+                ///console.log(RangeDeath);
 
                 return Math.max(0, Math.sqrt(value[3]/RangeDeath.max)*60);
             },
