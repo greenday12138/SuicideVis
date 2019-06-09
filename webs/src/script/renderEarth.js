@@ -323,4 +323,6 @@ maychart.on('click', function (params) {
     temp=RiverData[params.name];
     
     RefreshRiverChart(temp,params.name)
+
+    RefreshScatter(ScatterPointData[params.name]["dataMale"],ScatterPointData[params.name]["dataFemale"])
 });
