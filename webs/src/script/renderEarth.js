@@ -263,7 +263,7 @@ option = {
             },
             //symbolSize: 10,
             symbolSize: function (data) {
-                 return Math.max(20, data[2] / 20);
+                 return Math.max(0, data[2] / 20);
              },
             itemStyle: {
                 normal: {
