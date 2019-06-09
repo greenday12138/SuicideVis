@@ -98,11 +98,7 @@ option = {
     tooltip: {
         trigger: 'item',
         formatter: function (params) {
-<<<<<<< HEAD
-            return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2]+'<br/>'
-=======
             return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2].toFixed(2)+"每十万人"+'<br/>'
->>>>>>> parent of 95cc3e2... change symbol color
                     + "死亡人数" + ' : ' + params.value[3]+'<br/>'
                     + "GDP" + ' : ' + params.value[4];
         }
@@ -278,13 +274,8 @@ option = {
             },
             //symbolSize: 10,
             symbolSize: function (value) {
-<<<<<<< HEAD
-                console.log(value);
-                console.log(RangeDeath);
-=======
                 ///console.log(value);
                 ///console.log(RangeDeath);
->>>>>>> parent of 95cc3e2... change symbol color
 
                 return Math.max(0, Math.sqrt(value[3]/RangeDeath.max)*60);
             },
