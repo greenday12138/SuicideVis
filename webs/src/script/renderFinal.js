@@ -32,6 +32,19 @@ var dataBJ = [
     [31,46,5,49,0.28,10,6,"优"]
 ];
 
+var dataMale=[
+    [9,'A',37,27,1.163,"A年代"],
+    [8,'B',62,71,1.195,"良"],
+    [7,'B',62,71,1.195,"良"]
+];
+// 0  横坐标 1纵坐标分类
+
+var dataFemale=[
+    [1,'C',37,27,1.163,27,"优"],
+    [2,'B',62,71,1.195,60,"良"],
+    [2,'A',62,71,1.195,60,"良"]
+];
+
 var dataGZ = [
     [1,26,37,27,1.163,27,13,"优"],
     [2,85,62,71,1.195,60,8,"良"],
@@ -69,13 +82,13 @@ var dataGZ = [
 
 
 var schema2 = [
-    {name: 'date', index: 0, text: '日'},
-    {name: 'AQIindex', index: 1, text: 'AQI指数'},
-    {name: 'PM25', index: 2, text: 'PM2.5'},
-    {name: 'PM10', index: 3, text: 'PM10'},
-    {name: 'CO', index: 4, text: '一氧化碳（CO）'},
-    {name: 'NO2', index: 5, text: '二氧化氮（NO2）'},
-    {name: 'SO2', index: 6, text: '二氧化硫（SO2）'}
+    {name: 'GDP_Per', index: 0, text: '人均GDP'},
+    {name: 'Age', index: 1, text: '年龄段'},
+
+    {name: 'Death_Rate', index: 2, text: '死亡率'},
+    {name: 'Death_Number', index: 3, text: '死亡人数'},
+    {name: 'GDP_Year', index: 4, text: '年度总GDP'},
+    {name: 'GeneRation', index: 5, text: '年代'}
 ];
 
 
@@ -116,20 +129,20 @@ option3 = {
         formatter: function (obj) {
             var value = obj.value;
             return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
-                + obj.seriesName + ' ' + value[0] + '日：'
-                + value[7]
+                + obj.seriesName + ' '+ schema2[1].text + '：' + value[1] 
                 + '</div>'
-                + schema2[1].text + '：' + value[1] + '<br>'
+                + schema2[0].text + '：' + value[0] + '<br>'
+                + schema2[5].text + '：' + value[5] + '<br>'
                 + schema2[2].text + '：' + value[2] + '<br>'
                 + schema2[3].text + '：' + value[3] + '<br>'
                 + schema2[4].text + '：' + value[4] + '<br>'
-                + schema2[5].text + '：' + value[5] + '<br>'
-                + schema2[6].text + '：' + value[6] + '<br>';
+                
+                
         }
     },
     xAxis: {
         type: 'value',
-        name: 'GDP',
+        name: '人均GDP',
         nameGap: 16,
         nameTextStyle: {
             color: '#fff',
@@ -146,8 +159,8 @@ option3 = {
         }
     },
     yAxis: {
-        type: 'value',
-        name: '年龄',
+        type: 'category',
+        name: '年龄段',
         nameLocation: 'end',
         nameGap: 20,
         nameTextStyle: {
@@ -230,14 +243,14 @@ option3 = {
             name: '男',
             type: 'scatter',
             itemStyle: itemStyle,
-            data: dataBJ
+            data: dataMale
         },
         
         {
             name: '女',
             type: 'scatter',
             itemStyle: itemStyle,
-            data: dataGZ
+            data: dataFemale
         }
     ]
 };
