@@ -613,14 +613,18 @@ var rawData = [
 
 function GetMinMax(){
     var Temp={
-        min:rawData[0][1],
-        max:rawData[0][1]
+        min:rawData[0][2],
+        max:rawData[0][2]
     }
     for(var i=0;i<rawData.length;i++){
-        if(rawData[i][1]<Temp.min&&rawData[i][1]!=null){
-            Temp.min=rawData[i][1];
+        if(rawData[i][2]<Temp.min&&rawData[i][2]!=null){
+            Temp.min=rawData[i][2];
+        }
+        if(rawData[i][2]>Temp.max&&rawData[i][2]!=null){
+            Temp.max=rawData[i][2];
         }
     }
+    return Temp;
 }
 
 //multiline

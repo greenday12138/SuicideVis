@@ -1,4 +1,4 @@
-
+var RangeDeath=GetMinMax();
 
 var schema = [
     "1985",
@@ -237,6 +237,7 @@ option = {
         top: 'bottom',
         text: ['High', 'Low'],
         seriesIndex: [1],
+        range: [10,450],
         inRange: {
             color: [
 
@@ -269,13 +270,16 @@ option = {
                 }
             },
             //symbolSize: 10,
-            symbolSize: function (data) {
-                return Math.max(20, data[2] / 200000);
+            symbolSize: function (value) {
+                console.log(value);
+                console.log(RangeDeath);
+
+                return Math.max(0, Math.sqrt(value[3]/RangeDeath.max)*60);
             },
             itemStyle: {
                 normal: {
                     borderColor: '#fff',
-                    color: '#577ceb',
+                    color: '#0e62cb',
                 }
             }
         },
