@@ -284,7 +284,7 @@ option = {
             itemStyle: {
                 normal: {
                     borderColor: '#fff',
-                    color: '#0e62cb',
+                    color: '#577ceb',
                 }
             }
         },
