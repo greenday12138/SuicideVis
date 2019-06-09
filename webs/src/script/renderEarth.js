@@ -40,13 +40,10 @@ function makeMapData(rawData) {
     for (var i = 0; i < rawData.length; i++) {
         var geoCoord = geoCoordMap[rawData[i][0]];
         if (geoCoord) {
-            //console.log({
-            //    name: rawData[i][0],
-             //   value: geoCoord.concat(rawData[i][1])
-            //});
+            var temp=geoCoord.concat(rawData[i][1],rawData[i][2],rawData[i][3]);
             mapData.push({
-                name: rawData[i][0],
-                value: geoCoord.concat(rawData[i][1])
+                name:rawData[i][0],
+                value:temp
             });
         }
     }
@@ -100,7 +97,9 @@ option = {
     tooltip: {
         trigger: 'item',
         formatter: function (params) {
-            return params.seriesName + '<br/>' + params.name + ' : ' + params.value[2];
+            return params.name + '<br/>' + "死亡率" + ' : ' + params.value[2]+'<br/>'
+                    + "死亡人数" + ' : ' + params.value[3]+'<br/>'
+                    + "GDP" + ' : ' + params.value[4];
         }
     },
     //gong ju kuang
@@ -310,7 +309,7 @@ option = {
 maychart.setOption(option);
 
 maychart.on('click', function (params) {
-    //console.log(params);
+    console.log(params);
     //console.log(RiverData[params.name])
     temp=RiverData[params.name];
     

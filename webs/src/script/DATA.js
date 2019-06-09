@@ -610,6 +610,19 @@ var rawData = [
     ]
 ]
 
+
+function GetMinMax(){
+    var Temp={
+        min:rawData[0][1],
+        max:rawData[0][1]
+    }
+    for(var i=0;i<rawData.length;i++){
+        if(rawData[i][1]<Temp.min&&rawData[i][1]!=null){
+            Temp.min=rawData[i][1];
+        }
+    }
+}
+
 //multiline
 var Multiline = [
     [
