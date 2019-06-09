@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 
 with open(r'E:\Project\Python\test\master.json', 'r') as fr:
     data = json.load(fr)
@@ -54,8 +55,20 @@ for i in range(len(Countries)):
             temp.append(SEX[sex])
             count.append(temp)
     ThemeRiverData[Countries[i]] = count
+for i in range(len(Countries)):
+    if ThemeRiverData[Countries[i]][0][1] is None:
+        temp_ind = 0
+        while ThemeRiverData[Countries[i]][temp_ind][1] is None:
+            temp_ind += 1
+        ThemeRiverData[Countries[i]][0][1] = deepcopy(ThemeRiverData[Countries[i]][temp_ind][1])
+    if ThemeRiverData[Countries[i]][32][1] is None:
+        temp_ind = 32
+        while ThemeRiverData[Countries[i]][temp_ind][1] is None:
+            temp_ind += 1
+        ThemeRiverData[Countries[i]][32][1] = ThemeRiverData[Countries[i]][temp_ind][1]
+
 # print(ThemeRiverData)
 
 # 生成列表文件
-with open(r'.\ThemeRiverData.json', 'w') as fw:
+with open(r'.\RenderRiverNew.json', 'w') as fw:
     json.dump(ThemeRiverData, fw, sort_keys=False, indent=4)
