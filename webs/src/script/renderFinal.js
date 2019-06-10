@@ -3206,6 +3206,8 @@ function RefreshScatter(male,female){
         ]
     };
     ScatterChart.setOption(_option);
+    ScatterChartUp.setOption(_option);
 }
 /*--------------------------------------------- */
 ScatterChart.setOption(option3);
+ScatterChartUp.setOption(option3);
