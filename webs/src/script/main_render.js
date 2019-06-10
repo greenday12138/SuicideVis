@@ -10,9 +10,9 @@ var maychart=echarts.init(document.getElementById("left-earth"));
 
 var riverchart=echarts.init(document.getElementById("river"));
 
-var ScatterChart=echarts.init(document.getElementById("Scatter"),null, {renderer: 'svg'});
+var ScatterChart=echarts.init(document.getElementById("Scatter"));
 
-var ScatterChartUp=echarts.init(document.getElementById("ScatterUP"),null, {renderer: 'svg'});
+var ScatterChartUp=echarts.init(document.getElementById("ScatterUP"));
 document.getElementById("ScatterUP").style.display="none";
 //
 
