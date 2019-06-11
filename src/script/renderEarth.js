@@ -78,7 +78,8 @@ function makeParallelAxis(schema) {
 option = {
     backgroundColor: new echarts.graphic.RadialGradient(0.5, 0.5, 0.4, [{
         offset: 0,
-        color: '#4b5769'
+        color:'#4b5769' 
+        //'#4b5769'
     }, {
         offset: 1,
         color: '#404a59'
@@ -218,7 +219,8 @@ option = {
                 // show: false,
                 lineStyle: {
                     width: 1,
-                    color: 'rgba(255,255,255,0.3)'
+                    color: '#acb4c5'
+                    //'rgba(255,255,255,0.3)'
                 }
             },
             axisTick: {
@@ -282,7 +284,7 @@ option = {
             itemStyle: {
                 normal: {
                     borderColor: '#fff',
-                    color: '#0e62cb',
+                    color: '#577ceb',
                 }
             }
         },
@@ -321,4 +323,6 @@ maychart.on('click', function (params) {
     temp=RiverData[params.name];
     
     RefreshRiverChart(temp,params.name)
+
+    RefreshScatter(ScatterPointData[params.name]["dataMale"],ScatterPointData[params.name]["dataFemale"])
 });

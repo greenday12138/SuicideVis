@@ -28,7 +28,7 @@ var optionDefault = {
         axisTick: {},
 
         axisLabel: {
-            show: true
+            show: false
         },
         type: 'time',
         axisPointer: {
@@ -91,7 +91,7 @@ function MakeUpRiverOption(r_data,m_name){
             bottom: 50,
             axisTick: {},
             axisLabel: {
-                show: true
+                show: false
             },
             type: 'time',
             axisPointer: {
