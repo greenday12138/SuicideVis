@@ -13,6 +13,9 @@ var riverchart=echarts.init(document.getElementById("river"));
 var ScatterChart=echarts.init(document.getElementById("Scatter"));
 
 var ScatterChartUp=echarts.init(document.getElementById("ScatterUP"));
+
+
+
 document.getElementById("ScatterUP").style.display="none";
 //
 
